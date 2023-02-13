@@ -2,6 +2,16 @@
 
 1. [SetUp](#setup)
 
+<a name="setup">
+
 ## SetUp
 
-composer install
+> git clone https://github.com/robin-papazian/coorty-api.git
+
+> composer install
+
+> modifier .env ligne 27 : HOSTNAME & PASS
+
+> php bin/console doctrine:database:create
+
+> php bin/console doctrine:migrations:migrate

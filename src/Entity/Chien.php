@@ -2,31 +2,57 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\ChienRepository;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ChienRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ChienRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    description: 'Liste de tous les chiens sur le territoire français',
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+        new Delete(),
+    ],
+    normalizationContext: [
+        'groups' => ['chien:read'],
+    ],
+    denormalizationContext: [
+        'groups' => ['chien:write'],
+    ]
+)]
 class Chien
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['chien:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['chien:read', 'chien:write'])]
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Groups(['chien:read', 'chien:write'])]
     private ?int $age = null;
 
     #[ORM\ManyToOne(inversedBy: 'chiens')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['chien:read', 'chien:write'])]
     private ?Race $race = null;
 
     #[ORM\ManyToOne(inversedBy: 'chiens')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['chien:read', 'chien:write'])]
     private ?Departement $departement = null;
 
     public function getId(): ?int
